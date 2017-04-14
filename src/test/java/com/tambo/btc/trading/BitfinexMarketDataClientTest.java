@@ -1,5 +1,7 @@
 package com.tambo.btc.trading;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.List;
 
 import javax.ws.rs.client.Client;
@@ -8,6 +10,7 @@ import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
 import org.junit.Test;
 
 import com.google.gson.Gson;
@@ -16,8 +19,14 @@ public class BitfinexMarketDataClientTest {
 
 	@Test
 	public void testLatestQuote() {
-		
+
 		System.out.println(Bitfinex.getLatestQuote().last_price);
+	}
+
+	@Test
+	public void testCalcHelper() {
+
+		assertEquals(150, CalculationHelper.bpsAway(100, 101.50), 0);
 	}
 
 	@Test
@@ -30,7 +39,19 @@ public class BitfinexMarketDataClientTest {
 		String quoteString = response.readEntity(String.class);
 		Gson gson = new Gson();
 		OrderBook book = gson.fromJson(quoteString, OrderBook.class);
-		System.out.println(book);
+
+		System.out.println("Top 5 Ask Levels (Sorted by level):");
+		book.getTopAsks(5, 100).forEach(b -> print(b));
+		;
+
+		System.out.println("Top 5 Bid Levels (Sorted by level):");
+		book.getTopBids(5, 100).forEach(b -> print(b));
+
+	}
+
+	private void print(Object o) {
+		System.out.println(ToStringBuilder.reflectionToString(o));
+
 	}
 
 	@Test
