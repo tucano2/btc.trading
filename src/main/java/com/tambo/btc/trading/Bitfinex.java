@@ -1,5 +1,6 @@
 package com.tambo.btc.trading;
 
+import java.util.Arrays;
 import java.util.List;
 
 import javax.ws.rs.client.Client;
@@ -9,6 +10,7 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 public class Bitfinex {
 
@@ -43,8 +45,9 @@ public class Bitfinex {
 		Invocation.Builder builder = target.request();
 		Response response = builder.get();
 		String quoteString = response.readEntity(String.class);
-		Gson gson = new Gson();
-		List<Trade> trades = gson.fromJson(quoteString, List.class);
-		return trades;
+		GsonBuilder gsonBuilder = new GsonBuilder();
+		Gson gson = gsonBuilder.create();
+		Trade[] trades = gson.fromJson(quoteString, Trade[].class);
+		return Arrays.asList(trades);
 	}
 }

@@ -11,6 +11,7 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
 import org.junit.Test;
 
 import com.google.gson.Gson;
@@ -50,20 +51,18 @@ public class BitfinexMarketDataClientTest {
 	}
 
 	private void print(Object o) {
-		System.out.println(ToStringBuilder.reflectionToString(o));
+		System.out.println(ToStringBuilder.reflectionToString(o, ToStringStyle.DEFAULT_STYLE, true));
 
 	}
 
 	@Test
 	public void testTrades() {
-		Client client = ClientBuilder.newClient();
-		WebTarget target = client.target("https://api.bitfinex.com/v1");
-		target = target.path("/trades/BTCUSD");
-		Invocation.Builder builder = target.request();
-		Response response = builder.get();
-		String quoteString = response.readEntity(String.class);
-		Gson gson = new Gson();
-		List<Trade> trades = gson.fromJson(quoteString, List.class);
-		System.out.println(trades);
+
+		List<Trade> trades = Bitfinex.getTrades();
+		
+		
+		
+		trades.stream().forEach(t -> print(t));
+
 	}
 }
